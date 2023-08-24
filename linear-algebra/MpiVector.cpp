@@ -46,4 +46,15 @@ class MpiVector
         int getLo() {
             return mLo;
         }
+
+        double calculateNorm() const {
+            double local_sum = 0.0;
+            for(int i=0; i<mHi-mLo; i++){
+                local_sum += mData[i]*mData[i];
+            }
+            double global_sum;
+            // the result of Allreduce will be available to all processes
+            MPI::COMM_WORLD.Allreduce(&local_sum, &global_sum, 1, MPI::DOUBLE, MPI::SUM);
+            return sqrt(global_sum);
+        }    
 };
