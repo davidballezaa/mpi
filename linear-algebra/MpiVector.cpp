@@ -32,4 +32,10 @@ class MpiVector
             delete[] mData;
             delete[] mGlobalData;
         }
+
+        // local vector index conversion from global index
+        double& operator[](int globalIndex){
+            assert(mLo <= globalIndex && globalIndex < mHi);
+            return mData[globalIndex-mLo];
+        }
 };
