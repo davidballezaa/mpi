@@ -38,4 +38,12 @@ class MpiVector
             assert(mLo <= globalIndex && globalIndex < mHi);
             return mData[globalIndex-mLo];
         }
+
+        int getHi() {
+            return mHi;
+        }
+
+        int getLo() {
+            return mLo;
+        }
 };
