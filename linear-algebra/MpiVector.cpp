@@ -57,4 +57,21 @@ class MpiVector
             MPI::COMM_WORLD.Allreduce(&local_sum, &global_sum, 1, MPI::DOUBLE, MPI::SUM);
             return sqrt(global_sum);
         }    
+
+        void UpdateGlobal() {
+            int num_procs = MPI::COMM_WORLD.Get_size();
+
+            int* num_per_proc = new int[num_procs];
+
+            int local_size = mHi - mLo;
+            MPI::COMM_WORLD.Allgather(&local_size, 1, MPI::INT, num_per_proc, 1, MPI::INT);
+
+            int* lows_per_proc = new int[num_procs];
+            MPI::COMM_WORLD.Allgather(&mLo, 1, MPI::INT, lows_per_proc, 1, MPI::INT);
+
+            MPI::COMM_WORLD.Allgatherv(mData, local_size, MPI::DOUBLE, mGlobalData, num_per_proc, lows_per_proc, MPI::DOUBLE);
+
+            delete [] num_per_proc;
+            delete [] lows_per_proc;
+        }
 };
